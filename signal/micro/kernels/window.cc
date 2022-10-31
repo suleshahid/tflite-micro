@@ -1,4 +1,4 @@
-/* Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+/* Copyright 2022 The TensorFlow Authors. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "tensorflow/lite/micro/signal/src/window.h"
+#include "signal/src/window.h"
 
 #include <stdint.h>
 
@@ -37,7 +37,7 @@ constexpr int kOutputTensor = 0;
 // Elements in the vectors are ordered alphabetically by parameter name.
 constexpr int kShiftIndex = 0;  // 'shift'
 
-struct TfLiteAudioFrontendWindowParams {
+struct TFLMSignalWindowParams {
   int32_t shift;
   int32_t input_size;
 };
@@ -45,9 +45,9 @@ struct TfLiteAudioFrontendWindowParams {
 void* Init(TfLiteContext* context, const char* buffer, size_t length) {
   const uint8_t* buffer_t = reinterpret_cast<const uint8_t*>(buffer);
 
-  auto* params = static_cast<TfLiteAudioFrontendWindowParams*>(
+  auto* params = static_cast<TFLMSignalWindowParams*>(
       context->AllocatePersistentBuffer(
-          context, sizeof(TfLiteAudioFrontendWindowParams)));
+          context, sizeof(TFLMSignalWindowParams)));
 
   tflite::FlexbufferWrapper fbw(buffer_t, length);
   params->shift = fbw.ElementAsInt32(kShiftIndex);
@@ -79,7 +79,7 @@ TfLiteStatus Prepare(TfLiteContext* context, TfLiteNode* node) {
   TF_LITE_ENSURE_TYPES_EQ(context, output->type, kTfLiteInt16);
 
   auto* params =
-      reinterpret_cast<TfLiteAudioFrontendWindowParams*>(node->user_data);
+      reinterpret_cast<TFLMSignalWindowParams*>(node->user_data);
   RuntimeShape input_shape = GetTensorShape(input);
   params->input_size = input_shape.FlatSize();
 
@@ -91,7 +91,7 @@ TfLiteStatus Prepare(TfLiteContext* context, TfLiteNode* node) {
 
 TfLiteStatus Eval(TfLiteContext* context, TfLiteNode* node) {
   auto* params =
-      reinterpret_cast<TfLiteAudioFrontendWindowParams*>(node->user_data);
+      reinterpret_cast<TFLMSignalWindowParams*>(node->user_data);
 
   const TfLiteEvalTensor* input =
       tflite::micro::GetEvalInput(context, node, kInputTensor);

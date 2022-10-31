@@ -1,7 +1,7 @@
 def tflm_kernel_friends():
     return []
 
-def tflm_audio_frontend_friends():
+def tflm_signal_friends():
     return []
 
 def xtensa_fusion_f1_config():

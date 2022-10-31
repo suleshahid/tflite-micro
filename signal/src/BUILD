@@ -1,5 +1,5 @@
 package(
-    default_visibility = ["//tensorflow/lite/micro/signal:__subpackages__"],
+    default_visibility = ["//signal:__subpackages__"],
     licenses = ["notice"],
 )
 

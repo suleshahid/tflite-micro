@@ -117,6 +117,7 @@ AllOpsResolver::AllOpsResolver() {
   AddUnpack();
   AddVarHandle();
   AddWhile();
+  AddWindow();
   AddZerosLike();
 }
 

@@ -595,6 +595,10 @@ class MicroMutableOpResolver : public MicroOpResolver {
     return AddBuiltin(BuiltinOperator_WHILE, Register_WHILE(), ParseWhile);
   }
 
+  TfLiteStatus AddWindow() {
+    return AddCustom("WINDOW", tflite::Register_WINDOW());
+  }
+
   TfLiteStatus AddZerosLike() {
     return AddBuiltin(BuiltinOperator_ZEROS_LIKE, Register_ZEROS_LIKE(),
                       ParseZerosLike);

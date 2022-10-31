@@ -13,8 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#ifndef TENSORFLOW_LITE_MICRO_AUDIO_FRONTEND_SRC_WINDOW_H_
-#define TENSORFLOW_LITE_MICRO_AUDIO_FRONTEND_SRC_WINDOW_H_
+#ifndef SIGNAL_SRC_WINDOW_H_
+#define SIGNAL_SRC_WINDOW_H_
 
 #include <stdint.h>
 
@@ -29,4 +29,4 @@ void ApplyWindow(const int16_t* input,
                  int shift,
                  int16_t* output);
 
-#endif  // TENSORFLOW_LITE_MICRO_AUDIO_FRONTEND_SRC_WINDOW_H_
+#endif  // SIGNAL_SRC_WINDOW_H_

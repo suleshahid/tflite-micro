@@ -3,14 +3,14 @@
 # This extends the standard @rules_python rules to expose the C headers
 # contained in some Python packages like NumPy. It extends @rules_python rather
 # than duplicating the download mechanism, and to ensure the versions of Python
-# packages used throughout the WWORKSPACE are consistent. Exposing the headers
+# packages used throughout the WORKSPACE are consistent. Exposing the headers
 # could conceivably become a build-in feature of @rules_python at some point.
 
 def _find_headers(ctx, py_library, include_prefix):
     # Find the path to the headers within the @rules_python repository for the Python
     # package `py_library`.
 
-    # WARNING: To get a flesystem path via ctx.path(), its argument must be a
+    # WARNING: To get a filesystem path via ctx.path(), its argument must be a
     # label to a non-generated file. ctx.path() does not work on non-file
     # A standard technique for finding the path to a repository (see,
     # e.g., rules_go) is to use the repository's BUILD file; however, the exact
@@ -36,16 +36,23 @@ def _tflm_py_cc_headers_impl(ctx):
     src = _find_headers(ctx, ctx.attr.py_library, ctx.attr.include_prefix)
     destdir = "_include"
     ctx.symlink(src, destdir)
+    ctx.symlink(_find_headers(ctx, ctx.attr.py_library, "tensorflow"), "_all")
 
     # Write a BUILD file publishing a cc_library() target for the headers.
     BUILD = """\
 cc_library(
     name = "%s",
-    hdrs = glob(["%s/**/*.h"], allow_empty=False),
+    hdrs = glob(["%s/**/*"], allow_empty=False),
     includes = ["%s"],
-    visibility = ["@//tensorflow/lite/micro:__subpackages__"],
+    # TODO change visibility to visibility = ["@//:__subpackages__"]
+    visibility = ["@//:__subpackages__"],
 )
-""" % (ctx.attr.name, destdir, destdir)
+cc_import(
+    name = "%s_lib",
+    shared_library = "_all/libtensorflow_framework.so.2",
+    visibility = ["@//:__subpackages__"],
+)
+""" % (ctx.attr.name, destdir, destdir, ctx.attr.name)
     ctx.file("BUILD", content = BUILD, executable = False)
 
 tflm_py_cc_headers = repository_rule(

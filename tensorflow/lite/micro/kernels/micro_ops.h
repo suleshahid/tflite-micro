@@ -88,6 +88,8 @@ TfLiteRegistration Register_TRANSPOSE_CONV();
 TfLiteRegistration Register_UNIDIRECTIONAL_SEQUENCE_LSTM();
 TfLiteRegistration Register_VAR_HANDLE();
 TfLiteRegistration Register_WHILE();
+// TODO(b/160234179): Change custom OPs to also return by value.
+TfLiteRegistration* Register_WINDOW();
 TfLiteRegistration Register_ZEROS_LIKE();
 
 namespace ops {

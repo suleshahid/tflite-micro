@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "tensorflow/lite/micro/signal/src/window.h"
+#include "signal/src/window.h"
 
 #include <cstdint>
 

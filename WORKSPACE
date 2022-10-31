@@ -60,3 +60,10 @@ tflm_py_cc_headers(
     py_library = requirement("numpy"),
     include_prefix = "numpy/core/include",
 )
+
+tflm_py_cc_headers(
+    name = "tensorflow_headers",
+    py_library = requirement("tensorflow-cpu"),
+    include_prefix = "tensorflow/include",
+)
+
