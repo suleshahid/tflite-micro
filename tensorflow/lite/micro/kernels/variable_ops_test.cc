@@ -107,7 +107,6 @@ const flatbuffers::Offset<SubGraph> subgraph = CreateSubGraph(
     builder, builder.CreateVector(tensors.data(), tensors.size()),
     builder.CreateVector<int32_t>({0}), builder.CreateVector<int32_t>({2}),
     builder.CreateVector({var_handle_op, assign_op, read_op}));
-MicroPrintf("codes: %d%d", operator_codes.data()->IsNull(), false);
 const flatbuffers::Offset<Model> model_buffer = CreateModel(
     builder, TFLITE_SCHEMA_VERSION,
     builder.CreateVector(operator_codes.data(), operator_codes.size()),
@@ -129,12 +128,15 @@ void VariableOpsTester::TestResourceVariables(const std::vector<char>& buffer) {
   TFLITE_DCHECK(model);
   MicroAllocator* allocator = MicroAllocator::Create(tensor_arena, kTensorArenaSize);
   TFLITE_DCHECK(allocator);
-  MicroResourceVariables* resource_variables = MicroResourceVariables::Create(allocator, model);
+  MicroResourceVariables* resource_variables = MicroResourceVariables::Create(allocator, 1);
   TFLITE_DCHECK(resource_variables);
-
-  MicroInterpreter interpreter(model, testing::GetOpResolver(), allocator, resource_variables);
+  AllOpsResolver resolver = AllOpsResolver();
+  
+  MicroInterpreter interpreter(model, resolver, allocator, resource_variables);
 
   interpreter.AllocateTensors();
+
+  MicroPrintf("h");
 
   //TF_LITE_MICRO_EXPECT_EQ(interpreter.AllocateTensors(), kTfLiteOk);
 
@@ -156,7 +158,8 @@ void VariableOpsTester::TestResourceVariables(const std::vector<char>& buffer) {
 }
 
 int main(int args, char** argv) {
-
+  tflite::VariableOpsTester tester;
+  tester.TestAssignThenRead();
 }
 
 // TF_LITE_MICRO_TESTS_BEGIN

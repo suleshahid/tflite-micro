@@ -1378,8 +1378,6 @@ cc_binary(
         "//tensorflow/lite/micro/testing:micro_test",
         "//tensorflow/lite/schema:schema_fbs",
         "@flatbuffers//:runtime_cc",
-        "//tensorflow/lite/micro/memory_helpers.h",
-        "//tensorflow/lite/micro/micro_arena_constants.h",
     ],
 )
 

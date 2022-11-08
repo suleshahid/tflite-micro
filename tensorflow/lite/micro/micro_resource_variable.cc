@@ -36,6 +36,7 @@ MicroResourceVariables* MicroResourceVariables::Create(
   if (max_num_variables == 0) {
     return nullptr;
   }
+  //just call below Create from here to avoid duplicate?
 
   uint8_t* allocator_buffer = static_cast<uint8_t*>(
       allocator->AllocatePersistentBuffer(sizeof(MicroResourceVariables)));
