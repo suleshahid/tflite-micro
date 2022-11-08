@@ -1365,6 +1365,24 @@ cc_test(
     ],
 )
 
+cc_binary(
+    name = "variable_ops_test",
+    srcs = [
+        "variable_ops_test.cc",
+    ],
+    deps = [
+        ":kernel_runner",
+        "//tensorflow/lite/c:common",
+        "//tensorflow/lite/micro:debug_log",
+        "//tensorflow/lite/micro:test_helpers",
+        "//tensorflow/lite/micro/testing:micro_test",
+        "//tensorflow/lite/schema:schema_fbs",
+        "@flatbuffers//:runtime_cc",
+        "//tensorflow/lite/micro/memory_helpers.h",
+        "//tensorflow/lite/micro/micro_arena_constants.h",
+    ],
+)
+
 cc_test(
     name = "while_test",
     srcs = [

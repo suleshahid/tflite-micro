@@ -21,6 +21,7 @@ limitations under the License.
 #include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
 #include "tensorflow/lite/micro/testing/micro_test.h"
 #include "tensorflow/lite/schema/schema_generated.h"
+#include "tensorflow/lite/micro/op_resolver_utils.h"
 
 TF_LITE_MICRO_TESTS_BEGIN
 
@@ -40,12 +41,17 @@ TF_LITE_MICRO_TEST(LoadModelAndPerformInference) {
   // An easier approach is to just use the AllOpsResolver, but this will
   // incur some penalty in code space for op implementations that are not
   // needed by this graph.
-  static tflite::MicroMutableOpResolver<5> micro_op_resolver;  // NOLINT
-  micro_op_resolver.AddConv2D();
-  micro_op_resolver.AddDepthwiseConv2D();
-  micro_op_resolver.AddFullyConnected();
-  micro_op_resolver.AddMaxPool2D();
-  micro_op_resolver.AddSoftmax();
+  // int num_mrv = GetNumResourceVariables(model);
+  // int num_ops = GetNumUniqueOps(model);
+  // MicroPrintf("\nNum MRV: %d\nNum Ops: %d\n", num_mrv, num_ops);
+  tflite::MicroMutableOpResolver<5> micro_op_resolver;  // NOLINT
+  auto status = RegisterRequiredOps(micro_op_resolver, model);
+  TF_LITE_MICRO_EXPECT_EQ(kTfLiteOk, status);
+  // micro_op_resolver.AddConv2D();
+  // micro_op_resolver.AddDepthwiseConv2D();
+  // micro_op_resolver.AddFullyConnected();
+  // micro_op_resolver.AddMaxPool2D();
+  // micro_op_resolver.AddSoftmax();
 
   // Create an area of memory to use for input, output, and intermediate arrays.
   // Finding the minimum value for your model may require some trial and error.

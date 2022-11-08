@@ -84,7 +84,7 @@ class MicroMutableOpResolver : public MicroOpResolver {
   // function is called again for a previously added Custom Operator, the
   // MicroOpResolver will be unchanged and this function will return
   // kTfLiteError.
-  TfLiteStatus AddCustom(const char* name, TfLiteRegistration* registration) {
+  TfLiteStatus AddCustom(const char* name, const TfLiteRegistration* registration) {
     if (registrations_len_ >= tOpCount) {
       MicroPrintf(
           "Couldn't register custom op '%s', resolver size is too"
@@ -106,6 +106,12 @@ class MicroMutableOpResolver : public MicroOpResolver {
     new_registration->builtin_code = BuiltinOperator_CUSTOM;
     new_registration->custom_name = name;
     return kTfLiteOk;
+  }
+
+  TfLiteStatus AddBuiltinPublic(tflite::BuiltinOperator op,
+                          const TfLiteRegistration& registration,
+                          MicroOpResolver::BuiltinParseFunction parser) {
+    return this->AddBuiltin(op, registration, parser);
   }
 
   // The Add* functions below add the various Builtin operators to the

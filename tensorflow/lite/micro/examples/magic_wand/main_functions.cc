@@ -66,6 +66,7 @@ void setup() {
   micro_op_resolver.AddFullyConnected();
   micro_op_resolver.AddMaxPool2D();
   micro_op_resolver.AddSoftmax();
+  printf("here");
 
   // Build an interpreter to run the model with.
   static tflite::MicroInterpreter static_interpreter(

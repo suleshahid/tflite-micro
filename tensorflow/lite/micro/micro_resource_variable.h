@@ -27,6 +27,9 @@ class MicroResourceVariables {
  public:
   // Create
   static MicroResourceVariables* Create(MicroAllocator* allocator,
+                                        const Model* model);
+
+  static MicroResourceVariables* Create(MicroAllocator* allocator,
                                         int num_variables);
 
   // Creates a resource variable if none is available for the given container
@@ -53,6 +56,8 @@ class MicroResourceVariables {
 
   // Zeros out all resource buffers.
   TfLiteStatus ResetAll();
+
+  static unsigned int GetNumResourceVariables(const Model* model);
 
  private:
   int FindId(const char* container, const char* shared_name);

@@ -397,6 +397,22 @@ cc_library(
     copts = micro_copts(),
 )
 
+cc_library(
+    name = "op_resolver_utils",
+    srcs = [
+        "op_resolver_utils.cc",
+    ],
+    hdrs = [
+        "op_resolver_utils.h",
+    ],
+    copts = micro_copts(),
+    deps = [
+        ":flatbuffer_utils",
+        ":op_resolvers",
+        "//tensorflow/lite/schema:schema_utils",
+    ],
+)
+
 cc_test(
     name = "micro_log_test",
     srcs = [

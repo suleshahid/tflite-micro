@@ -221,3 +221,5 @@ class Interpreter(object):
       raise ValueError("Index must be a non-negative integer")
 
     return self._interpreter.GetOutputTensorDetails(index)
+
+#def getNumberOfMRV(model)

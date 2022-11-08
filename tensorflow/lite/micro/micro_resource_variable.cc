@@ -22,10 +22,30 @@ limitations under the License.
 #include "tensorflow/lite/micro/memory_helpers.h"
 #include "tensorflow/lite/micro/micro_log.h"
 #include "tensorflow/lite/micro/micro_utils.h"
+#include "tensorflow/lite/schema/schema_utils.h"
 
 namespace tflite {
 
 namespace {}  // namespace
+
+MicroResourceVariables* MicroResourceVariables::Create(
+    MicroAllocator* allocator, const Model* model) {
+  TFLITE_DCHECK(allocator != nullptr);
+  
+  unsigned int max_num_variables = GetNumResourceVariables(model);
+  if (max_num_variables == 0) {
+    return nullptr;
+  }
+
+  uint8_t* allocator_buffer = static_cast<uint8_t*>(
+      allocator->AllocatePersistentBuffer(sizeof(MicroResourceVariables)));
+  MicroResourceVariable* variable_array =
+      static_cast<MicroResourceVariable*>(allocator->AllocatePersistentBuffer(
+          sizeof(MicroResourceVariable) * max_num_variables));
+  MicroResourceVariables* variables = new (allocator_buffer)
+      MicroResourceVariables(variable_array, max_num_variables);
+  return variables;
+}
 
 MicroResourceVariables* MicroResourceVariables::Create(
     MicroAllocator* allocator, int max_num_variables) {
@@ -143,6 +163,38 @@ int MicroResourceVariables::FindId(const char* container,
     }
   }
   return -1;
+}
+
+unsigned int MicroResourceVariables::GetNumResourceVariables(const Model* model) {
+  unsigned int num_resource_variables = 0;
+  int num_subgraphs = model->subgraphs()->size();
+  for (int subgraph_idx = 0; subgraph_idx < num_subgraphs;
+      subgraph_idx++) {
+    const SubGraph* subgraph = model->subgraphs()->Get(subgraph_idx);
+    TFLITE_DCHECK(subgraph != nullptr);
+
+    auto* opcodes = model->operator_codes();
+    for (size_t i = 0; i < NumSubgraphOperators(subgraph); ++i) {
+      const auto* op = subgraph->operators()->Get(i);
+      const size_t index = op->opcode_index();
+      if (index >= opcodes->size()) {
+        MicroPrintf("Missing registration for opcode_index %d\n", index);
+        return kTfLiteError;
+      }
+      const auto* opcode = opcodes->Get(index);
+      auto builtin_code = opcode->builtin_code();
+      MicroPrintf("bc: %d", builtin_code);
+      if (builtin_code <= BuiltinOperator_PLACEHOLDER_FOR_GREATER_OP_CODES) {
+        MicroPrintf("less than 127");
+        builtin_code = GetBuiltinCode(opcode);
+      }
+      //MicroPrintf("builtinCode = %d", EnumNameBuiltinOperator(builtin_code));
+      if (builtin_code == BuiltinOperator_ASSIGN_VARIABLE){
+        num_resource_variables++;
+      }
+    }
+  }
+  return num_resource_variables;
 }
 
 }  // namespace tflite
