@@ -18,7 +18,10 @@ import numpy as np
 import tensorflow as tf
 print(tf.__file__)
 
-from tflite_micro.signal import gen_window_op
+# pylint: disable=g-bad-import-order,unused-import
+from tensorflow.python.framework import load_library
+from tensorflow.python.platform import resource_loader
+gen_window_op = load_library.load_op_library(resource_loader.get_path_to_datafile('/usr/local/google/home/sulemanshahid/.cache/bazel/_bazel_sulemanshahid/f138b7b297babdf552c7016c02e4bfad/execroot/tflite_micro/bazel-out/k8-fastbuild/bin/signal/python/ops/_window_op.so'))
 
 
 def hann_window_weights(window_length, shift, dtype=np.int16):

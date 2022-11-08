@@ -22,7 +22,7 @@ from absl import logging
 import numpy as np
 import tensorflow as tf
 
-from tflite_micro.python.tflite_micro.signal.ops import window_op
+from tflite_micro.signal.python.ops import window_op
 #from tflite_micro.tensorflow.lite.micro.python.interpreter.src import tflm_runtime
 
 _window_length = 320

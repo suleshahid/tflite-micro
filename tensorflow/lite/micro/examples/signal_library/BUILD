@@ -56,9 +56,7 @@ py_binary(
         "noubsan",
     ],
     deps = [
-        requirement("numpy"),
         requirement("tensorflow-cpu"),
-        "//tensorflow/lite/micro/python/interpreter/src:tflm_runtime",
     ],
 )
 
